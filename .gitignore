@@ -1,0 +1,23 @@
+*.ipynb_checkpoints/
+*.tmp
+*.pyc
+*.swp
+*.swo
+*.vscode
+*.zip
+*.tar
+
+# ROS related
+build/
+devel/
+models/
+.catkin_workspace
+*.log
+*.pcd
+*.bag
+
+# Deep learning related
+*.pth
+*.pkl
+*.h5
+*.caffemodel
