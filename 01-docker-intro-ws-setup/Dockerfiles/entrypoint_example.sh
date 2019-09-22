@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Setup the style of color
 COLOR_RED='\033[0;31m'

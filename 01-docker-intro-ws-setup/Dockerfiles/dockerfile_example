@@ -1,0 +1,57 @@
+# FROM [image]:[tag]
+#     image:   The base-image you choose
+#     tag:     The tag to identify different version of docker image, default is "latest"
+FROM ubuntu:bionic
+
+
+# RUN [command1] && [command2] && ...
+#    &&:  After finishing command1, do command2, ...
+#    \:   Continue in next line
+RUN apt-get update && \
+    apt-get install -y sudo \
+    curl \
+    wget \
+    lsb-release \
+    iputils-ping \
+    git \
+    vim
+
+
+# ENV [var assignment]
+#    var:    environment variable in docker container
+ENV PROJECT_ROOT="/home/root/lab01"
+
+
+# COPY [--chown=<user>:<group>] [host_file_path] [container_file_path]
+
+#                Copy file from host OS to container
+#    --chown:    give the permission to docker container user
+COPY ./entrypoint_example.sh ${PROJECT_ROOT}/entrypoint_example.sh
+
+
+# Set excutable permission to the file
+RUN chmod +x ${PROJECT_ROOT}/entrypoint_example.sh
+
+
+# WORKDIR [directory in container]
+#           WORKDIR command provide a function to set your initial directory once enter the container
+WORKDIR ${PROJECT_ROOT}
+
+
+# 1. ENTRYPOINT ["command or args", "command or args", "command or args"...]
+#           The default script file or command assigned by user is running once the container
+#           be launched. An ENTRYPOINT allows you to configure a container that will run as an executable.
+# ENTRYPOINT ["/bin/bash", "-c", "${PROJECT_ROOT}/entrypoint_example.sh"]
+
+# 2. CMD ["command or args", "command or args", "command or args"...]
+#           CMD instruction allows you to set a default command, 
+#           which will be executed only when you run container without 
+#           specifying a command. If Docker container runs with a command, 
+#           the default command will be ignored. If Dockerfile has more than
+#           one CMD instruction, all but last CMD instructions are ignored.
+CMD ["/bin/bash", "-c", "${PROJECT_ROOT}/entrypoint_example.sh"]
+
+
+# The two instructions demonstated above cause the same effect, but there is a 
+# little of difference between them, if your are interested in, please visit:
+# https://goinbigdata.com/docker-run-vs-cmd-vs-entrypoint/
