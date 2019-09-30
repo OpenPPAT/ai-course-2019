@@ -56,4 +56,5 @@ nvidia-docker run -it --rm --name="ai-course-vnc${host_vnc_port}" \
             -p ${host_vnc_port}:6901 \
             -p ${host_jupyter_port}:8888 \
             -v ${HOME}/ai-course-2019:/home/student/ai-course-2019 \
+            -w /home/student/ai-course-2019/02-jupyter-python-search \
             argnctu/ai-course:ws-vnc bash
