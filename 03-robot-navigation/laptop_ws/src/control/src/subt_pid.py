@@ -23,13 +23,13 @@ class Robot_PID():
 	def __init__(self):
 		self.node_name = rospy.get_name()
 		self.dis4constV = 3. # Distance for constant velocity
-		self.pos_ctrl_max = 0.7
+		self.pos_ctrl_max = 0.4
 		self.pos_ctrl_min = 0
-		self.ang_ctrl_max = 0.8
-		self.ang_ctrl_min = -0.8
+		self.ang_ctrl_max = 0.5
+		self.ang_ctrl_min = -0.5
 		self.turn_threshold = 70
-		self.cmd_ctrl_max = 0.7
-		self.cmd_ctrl_min = -0.7
+		self.cmd_ctrl_max = 0.3
+		self.cmd_ctrl_min = -0.3
 		self.arrived_dis = 0.1 # meters
 		self.frame_id = 'map'
 		self.emergency_stop = False
@@ -46,7 +46,7 @@ class Robot_PID():
 		self.sub_joystick = rospy.Subscriber("joy", Joy, self.joy_cb, queue_size=1)
 		rospy.Subscriber('wt_odom', Odometry, self.odom_cb, queue_size = 1, buff_size = 2**24)
 		self.pub_cmd = rospy.Publisher("cmd_vel", Twist, queue_size = 1)
-		# self.pub_goal = rospy.Publisher("goal_point", Marker, queue_size = 1)
+		self.pub_goal = rospy.Publisher("goal_point", Marker, queue_size = 1)
 		# self.emergency_stop_srv = rospy.Service("emergency_stop", SetBool, self.emergency_stop_cb)
 
 		self.pos_control = PID_control("Position")
@@ -65,6 +65,8 @@ class Robot_PID():
 
 			if self.estop:
 				rospy.loginfo('Disable auto navigation, switch joystick control.')
+				for i in range(5):
+					self.pub_cmd.publish(Twist())
 			else:
 				rospy.loginfo('Enable auto navigation.')
 
@@ -94,9 +96,10 @@ class Robot_PID():
 		else:
 			pos_output, ang_output = self.control(goal_distance, goal_angle)
 		
+		SCALE = 1.2
 		cmd_msg = Twist()
-		cmd_msg.linear.x = pos_output
-		cmd_msg.angular.z = ang_output
+		cmd_msg.linear.x = pos_output * SCALE
+		cmd_msg.angular.z = ang_output 
 
 		if not self.estop:
 			self.pub_cmd.publish(cmd_msg)
@@ -203,7 +206,7 @@ class Robot_PID():
 		marker.scale.z = 0.6
 		marker.color.a = 1.0
 		marker.color.g = 1.0
-		# self.pub_goal.publish(marker)
+		self.pub_goal.publish(marker)
 
 	def pos_pid_cb(self, config, level):
 		print("Position: [Kp]: {Kp}   [Ki]: {Ki}   [Kd]: {Kd}\n".format(**config))
