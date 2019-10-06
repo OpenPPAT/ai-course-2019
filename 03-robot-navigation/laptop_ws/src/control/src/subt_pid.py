@@ -3,16 +3,15 @@ import numpy as np
 import cv2
 import roslib
 import rospy
+import rospkg
 import tf
 import struct
 import math
 import time
-from sensor_msgs.msg import Image, LaserScan
-from sensor_msgs.msg import CameraInfo
+from sensor_msgs.msg import CameraInfo, Image, LaserScan, Joy
 from geometry_msgs.msg import PoseArray, Pose, PoseStamped, Point, Twist
 from visualization_msgs.msg import Marker, MarkerArray
 from nav_msgs.msg import OccupancyGrid, MapMetaData, Odometry
-import rospkg
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
 from control.cfg import pos_PIDConfig, ang_PIDConfig
@@ -38,14 +37,17 @@ class Robot_PID():
 		self.final_goal = None # The final goal that you want to arrive
 		self.goal = self.final_goal
 
+		self.estop = False
+		self.prev_estop_button = 0
+
 		rospy.loginfo("[%s] Initializing " %(self.node_name))
 
-		self.sub_goal = rospy.Subscriber("/pursue_point", PoseStamped, self.goal_cb, queue_size=1)
+		self.sub_goal = rospy.Subscriber("pursue_point", PoseStamped, self.goal_cb, queue_size=1)
+		self.sub_joystick = rospy.Subscriber("joy", Joy, self.joy_cb, queue_size=1)
 		rospy.Subscriber('wt_odom', Odometry, self.odom_cb, queue_size = 1, buff_size = 2**24)
-		# self.pub_cmd = rospy.Publisher("/X1/cmd_vel", Twist, queue_size = 1)
-		self.pub_cmd = rospy.Publisher("nav_vel", Twist, queue_size = 1)
-		self.pub_goal = rospy.Publisher("/goal_point", Marker, queue_size = 1)
-		self.emergency_stop_srv = rospy.Service("/emergency_stop", SetBool, self.emergency_stop_cb)
+		self.pub_cmd = rospy.Publisher("cmd_vel", Twist, queue_size = 1)
+		# self.pub_goal = rospy.Publisher("goal_point", Marker, queue_size = 1)
+		# self.emergency_stop_srv = rospy.Service("emergency_stop", SetBool, self.emergency_stop_cb)
 
 		self.pos_control = PID_control("Position")
 		self.ang_control = PID_control("Angular")
@@ -54,6 +56,20 @@ class Robot_PID():
 		self.ang_srv = Server(ang_PIDConfig, self.ang_pid_cb, "Angular")
 		
 		self.initialize_PID()
+
+	def joy_cb(self, msg):
+		# estop button: [B]
+		if msg.buttons[1] == 1 and self.prev_estop_button == 0:
+			rospy.sleep(0.05)
+			self.estop = not self.estop
+
+			if self.estop:
+				rospy.loginfo('Disable auto navigation, switch joystick control.')
+			else:
+				rospy.loginfo('Enable auto navigation.')
+
+		self.prev_estop_button = msg.buttons[2]
+
 
 	def odom_cb(self, msg):
 		self.frame_id = msg.header.frame_id
@@ -81,8 +97,10 @@ class Robot_PID():
 		cmd_msg = Twist()
 		cmd_msg.linear.x = pos_output
 		cmd_msg.angular.z = ang_output
-		self.pub_cmd.publish(cmd_msg)
-		self.publish_goal(self.goal)
+
+		if not self.estop:
+			self.pub_cmd.publish(cmd_msg)
+			self.publish_goal(self.goal)
 
 	def control(self, goal_distance, goal_angle):
 		self.pos_control.update(goal_distance)
@@ -185,7 +203,7 @@ class Robot_PID():
 		marker.scale.z = 0.6
 		marker.color.a = 1.0
 		marker.color.g = 1.0
-		self.pub_goal.publish(marker)
+		# self.pub_goal.publish(marker)
 
 	def pos_pid_cb(self, config, level):
 		print("Position: [Kp]: {Kp}   [Ki]: {Ki}   [Kd]: {Kd}\n".format(**config))
