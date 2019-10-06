@@ -10,4 +10,4 @@ docker run -it --rm --privileged --net=host --name=super-pi \
         -v ${HOME}/ai-course-2019/03-robot-navigation/robot_ws:/home/ai_student/robot_ws:rw \
         -w /home/ai_student/robot_ws \
         -u 1000:${UID} \
-        argnctu/ai-course:super-pi
+        argnctu/ai-course:super-pi 
