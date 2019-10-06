@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 docker run -it --rm --privileged --net=host --name=super-pi \
         --device=/dev/input/js0 \
         --device=/dev/ttyUSB0 \
