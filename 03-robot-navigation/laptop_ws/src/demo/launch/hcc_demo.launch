@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+    <arg name="bot" default="mmbot14" />
+
+    <group ns="$(arg bot)">
+        <node pkg="demo" type="rename_odom_msg2.py" name="rename_odom_node" output="screen" >
+            <param name="bot" type="str" value="$(arg bot)" />
+        </node>
+
+        <node pkg="control" type="subt_pid.py" name="subt_pid" output="screen" />
+
+        <node pkg="control" type="pure_pursuit_point.py" name="pure_pursuit_point" output="screen" />
+    </group>
+</launch>
