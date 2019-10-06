@@ -19,7 +19,7 @@ from control.cfg import pos_PIDConfig, ang_PIDConfig
 from std_srvs.srv import SetBool, SetBoolResponse
 robot = None
 path = []
-pub_point = rospy.Publisher('/pursue_point', PoseStamped, queue_size=10)
+pub_point = rospy.Publisher('pursue_point', PoseStamped, queue_size=10)
 
 def odom_cb(msg):
 	global robot, path, pub_point
