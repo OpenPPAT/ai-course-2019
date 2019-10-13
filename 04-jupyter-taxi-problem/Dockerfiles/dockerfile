@@ -47,5 +47,4 @@ CMD ["bash"]
 
 # install gym-duckienav
 RUN git clone https://github.com/ARG-NCTU/gym-duckienav.git
-RUN cd gym-duckienav
-RUN pip install -e .
+RUN cd gym-duckienav && pip install -e .
