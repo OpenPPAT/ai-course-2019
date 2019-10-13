@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="hostname" default="$(env HOSTNAME)" />
+
+    <group ns="$(arg hostname)">
+        <node name="joy_node" pkg="joy" type="joy_node" required="true" output="screen" />
+        <node name="teleop_node" pkg="teleop_twist_joy" type="teleop_node" required="true">
+            <param name="enable_turbo_button" value="2" />
+        </node>
+        <node name="diff_control_node" pkg="diff_drive" type="diff_control_node.py" required="true" output="log" />
+    </group>
+</launch>
