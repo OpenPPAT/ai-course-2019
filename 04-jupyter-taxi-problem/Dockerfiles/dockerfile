@@ -1,0 +1,50 @@
+FROM osrf/ros:melodic-desktop-bionic
+
+SHELL ["/bin/bash","-c"]
+
+# Jupyter installation
+RUN apt-get update && apt-get install -y python-pip curl
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash
+RUN apt-get -y install nodejs
+
+RUN pip install jupyter ipywidgets jupyterlab bqplot pyyaml jupyros numpy
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+RUN apt-get install -y ros-${ROS_DISTRO}-serial
+
+EXPOSE 8888
+ENV QT_X11_NO_MITSHM=1
+
+# Configure user
+ARG user=student
+ARG passwd=student
+ARG uid=1000
+ARG gid=1000
+ENV USER=$user
+ENV PASSWD=$passwd
+ENV UID=$uid
+ENV GID=$gid
+RUN groupadd $USER && \
+    useradd --create-home --no-log-init -g $USER $USER && \
+    usermod -aG sudo $USER && \
+    echo "$PASSWD:$PASSWD" | chpasswd && \
+    chsh -s /bin/bash $USER && \
+    # Replace 1000 with your user/group id
+    usermod  --uid $UID $USER && \
+    groupmod --gid $GID $USER
+
+
+# Setup ROS for custom user
+USER $USER
+ENV HOME=/home/$USER 
+RUN rosdep fix-permissions && rosdep update
+RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+RUN /bin/bash -c "source ~/.bashrc"
+
+WORKDIR ${HOME}
+
+CMD ["bash"]
+
+# install gym-duckienav
+RUN git clone https://github.com/ARG-NCTU/gym-duckienav.git
+RUN cd gym-duckienav && pip install -e .
