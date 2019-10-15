@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <node pkg="control" type="pure_pursuit_point.py" name="pure_pursuit_point"  output="screen" clear_params="true" required="true">
+    </node>
+
+    <node pkg="control" type="subt_pid.py" name="subt_pid"  output="screen" clear_params="true" required="true">
+    </node>
+
+</launch>

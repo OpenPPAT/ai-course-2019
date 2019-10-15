@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <node pkg="joy" type="joy_node" name="remote_joy_node"  output="screen" clear_params="true" required="true">
+    	<remap from="/joy" to="/joy_teleop/joy"/>
+    </node>
+</launch>
