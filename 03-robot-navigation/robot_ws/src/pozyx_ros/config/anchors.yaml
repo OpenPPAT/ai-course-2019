@@ -1,0 +1,43 @@
+---
+anchors: #x, y, z are measured in mm
+    -       # should be at origin point
+        anchor_id: 0x6742
+        px: 0
+        py: 0
+        pz: 200
+    -       # defines x axis and y should be 0
+        anchor_id: 0x6755
+        px: 10000
+        py: 0
+        pz: 700
+    -   # defines the direction of y so y should be positive
+        anchor_id: 0x674f
+        px: 0
+        py: 7150
+        pz: 2500
+    -
+        anchor_id: 0x6e5d
+        px: 10000
+        py: 7000
+        pz: 2500
+    -
+        anchor_id: 0x6754
+        px: 5000
+        py: 1000
+        pz: 3200
+    -
+        anchor_id: 0x6713
+        px: 10000
+        py: 2500
+        pz: 2500
+    -
+        anchor_id: 0x6a1c
+        px: 0
+        py: 0
+        pz: 2500
+
+    # anchors = [DeviceCoordinates(0x6754, 1, Coordinates(0, 0, 490)),
+    #            DeviceCoordinates(0x674f, 1, Coordinates(2400, 0, 0)),
+    #            DeviceCoordinates(0x6e5d, 1, Coordinates(1200, 10000, 490)),
+    #            DeviceCoordinates(0x6755, 1, Coordinates(0, 20000, 0)),
+    #            DeviceCoordinates(0x6742, 1, Coordinates(2400, 20000, 490))]

@@ -1,0 +1,14 @@
+<launch>
+    <arg name="pkg_name" value="pozyx_ros"/>
+    <arg name="node_name" default="pozyx_node"/>
+
+    <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg node_name).py" output="screen">
+    	<rosparam command="load" file="$(find pozyx_ros)/config/anchors.yaml"/>
+    </node>
+
+    
+    <node name="pose_visualizer" pkg="$(arg pkg_name)" type="pose_visualization.py"
+    	  output="screen" />
+    
+
+</launch>
