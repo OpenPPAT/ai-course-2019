@@ -34,13 +34,13 @@ class Robot_PID():
 		self.cmd_ctrl_min = -0.7
 		self.arrived_dis = 0.2 # meters
 		self.frame_id = 'map'
-		self.emergency_stop = True
+		self.emergency_stop = False
 		self.final_goal = None # The final goal that you want to arrive
 		self.goal = self.final_goal
 
 		rospy.loginfo("[%s] Initializing " %(self.node_name))
 		
-		self.use_odom = rospy.get_param("use_odom")
+		self.use_odom = False#rospy.get_param("use_odom")
 		if not self.use_odom:
 			rospy.Timer(rospy.Duration(1/30.), self.timer_cb)
 			self.cmd = Twist()
@@ -49,7 +49,7 @@ class Robot_PID():
 		self.pub_arrive = rospy.Publisher("arrive", Bool, queue_size=1)
 
 		if self.use_odom: rospy.Subscriber('odometry/ground_truth', Odometry, self.odom_cb, queue_size = 1, buff_size = 2**24)
-		self.pub_cmd = rospy.Publisher("~cmd_vel", Twist, queue_size = 1)
+		self.pub_cmd = rospy.Publisher("/cmd_vel", Twist, queue_size = 1)
 		self.pub_goal = rospy.Publisher("goal_point", Marker, queue_size = 1)
 		self.pub_estop = rospy.Publisher("/husky/stop_mode", Bool, queue_size = 1)
 		self.emergency_stop_srv = rospy.Service("/emergency_stop", SetBool, self.emergency_stop_cb)
@@ -111,6 +111,7 @@ class Robot_PID():
 		return pos_output, ang_output
 
 	def goal_cb(self, p):
+		#print "goal_cb"
 		self.final_goal = [p.pose.position.x, p.pose.position.y]
 		self.goal = self.final_goal
 		# New goal, publish arrive to false
@@ -136,15 +137,16 @@ class Robot_PID():
 				estop.data = True
 				self.pub_estop.publish(estop)
 				self.publish_goal(self.goal)
+				#print self.emergency_stop
 				return
 			else:
 				estop.data = False
 				self.pub_estop.publish(estop)
 				pos_output, ang_output = self.control(goal_distance, goal_angle)
-			
 			self.cmd = Twist()
 			self.cmd.linear.x = pos_output
 			self.cmd.angular.z = ang_output
+			print self.cmd
 			self.pub_cmd.publish(self.cmd)
 			if self.goal is not None:
 				self.publish_goal(self.goal)

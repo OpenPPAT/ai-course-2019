@@ -11,14 +11,15 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
   nav_msgs
-  pcl_conversions
-  pcl_ros
+  #pcl_conversions
+  #pcl_ros
   roscpp
   rospy
   sensor_msgs
   dynamic_reconfigure
   std_msgs
 )
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

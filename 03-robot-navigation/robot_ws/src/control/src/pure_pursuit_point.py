@@ -19,10 +19,10 @@ from dynamic_reconfigure.server import Server
 from control.cfg import pos_PIDConfig, ang_PIDConfig
 from std_srvs.srv import SetBool, SetBoolResponse
 robot = None
-DIS_THRES = 2.0 # Distance threshold
+DIS_THRES = 0.1 # Distance threshold
 ANGLE_THRES = np.radians(45.0)
 path = []
-pub_point = rospy.Publisher('pursue_point', PoseStamped, queue_size=10)
+pub_point = rospy.Publisher('/pursue_point', PoseStamped, queue_size=10)
 use_odom = None
 
 def odom_cb(msg):
@@ -49,6 +49,7 @@ def odom_cb(msg):
 	pub_point.publish(pose)
 
 def path_cb(msg):
+	rospy.loginfo('get planning path!')
 	global robot, path, use_odom
 	if robot is None and use_odom:
 		return
@@ -65,6 +66,7 @@ def path_cb(msg):
 	for pose in msg.poses:
 		p = [pose.pose.position.x, pose.pose.position.y]
 		too_close = distanceBtwnPoints(p[0], p[1], robot[0], robot[1]) < DIS_THRES
+		if too_close: rospy.loginfo("too close")
 		# Not add to path if too close 
 		if start or not too_close:
 			start = True
@@ -91,6 +93,7 @@ def path_cb(msg):
 		else:
 			pose.pose.position.x = path[0][0]
 			pose.pose.position.y = path[0][1]
+		# print pose
 		pub_point.publish(pose)
 '''
 def cb_arrive(msg):
@@ -106,7 +109,7 @@ def distanceBtwnPoints(x1, y1, x2, y2):
 def main():
 	rospy.init_node('pub_point', anonymous=True)
 	global use_odom
-	use_odom = rospy.get_param('use_odom')
+	use_odom = False #rospy.get_param('use_odom')
 	print "use_odom is: ", use_odom
 	rospy.Subscriber("planning_path", Path, path_cb, queue_size=1)
 	if use_odom:
