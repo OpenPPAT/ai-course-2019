@@ -40,7 +40,7 @@ def odom_cb(msg):
 	pose.pose.position.x = path[0][0]
 	pose.pose.position.y = path[0][1]
 	pub_point.publish(pose)
-	print(path[0][0], path[0][1])
+	# print(path[0][0], path[0][1])
 
 
 def path_cb(msg):
@@ -52,7 +52,7 @@ def path_cb(msg):
 	start = False
 	for pose in msg.poses:
 		p = [pose.pose.position.x, pose.pose.position.y]
-		print(p)
+		# print(p)
 		too_close = distanceBtwnPoints(p[0], p[1], robot[0], robot[1]) < 0.2
 		if start or not too_close:
 			start = True
