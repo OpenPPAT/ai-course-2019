@@ -40,7 +40,7 @@ class Robot_PID():
 
 		rospy.loginfo("[%s] Initializing " %(self.node_name))
 		
-		self.use_odom = False#rospy.get_param("use_odom")
+		self.use_odom = rospy.get_param("use_odom")
 		if not self.use_odom:
 			rospy.Timer(rospy.Duration(1/30.), self.timer_cb)
 			self.cmd = Twist()
@@ -48,7 +48,7 @@ class Robot_PID():
 		self.sub_goal = rospy.Subscriber("pursue_point", PoseStamped, self.goal_cb, queue_size=1)
 		self.pub_arrive = rospy.Publisher("arrive", Bool, queue_size=1)
 
-		if self.use_odom: rospy.Subscriber('odometry/ground_truth', Odometry, self.odom_cb, queue_size = 1, buff_size = 2**24)
+		if self.use_odom: rospy.Subscriber('/pozyx_odom', Odometry, self.odom_cb, queue_size = 1, buff_size = 2**24)
 		self.pub_cmd = rospy.Publisher("/cmd_vel", Twist, queue_size = 1)
 		self.pub_goal = rospy.Publisher("goal_point", Marker, queue_size = 1)
 		self.pub_estop = rospy.Publisher("/husky/stop_mode", Bool, queue_size = 1)

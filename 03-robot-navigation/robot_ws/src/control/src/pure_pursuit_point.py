@@ -109,11 +109,11 @@ def distanceBtwnPoints(x1, y1, x2, y2):
 def main():
 	rospy.init_node('pub_point', anonymous=True)
 	global use_odom
-	use_odom = False #rospy.get_param('use_odom')
+	use_odom = rospy.get_param('use_odom')
 	print "use_odom is: ", use_odom
 	rospy.Subscriber("planning_path", Path, path_cb, queue_size=1)
 	if use_odom:
-		rospy.Subscriber('odometry/ground_truth', Odometry, odom_cb, queue_size = 1, buff_size = 2**24)
+		rospy.Subscriber('/pozyx_odom', Odometry, odom_cb, queue_size = 1, buff_size = 2**24)
 		robot = [0, 0]
 	#rospy.Subscriber('arrive', Bool, cb_arrive, queue_size = 1)
 	rospy.spin()

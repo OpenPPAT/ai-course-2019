@@ -8,6 +8,7 @@ from pypozyx.tools.version_check import *
 from tf.transformations import quaternion_from_euler
 from math import radians
 from visualization_msgs.msg import Marker
+from nav_msgs.msg import Odometry
 
 class pozyx_node(object):
     def __init__(self):
@@ -16,6 +17,8 @@ class pozyx_node(object):
         self.anchors = rospy.get_param("~anchors")
         print self.anchors
         self.pub_poses = rospy.Publisher('~local_tag_pose', PoseStamped, queue_size=1)
+        self.pub_odom = rospy.Publisher('/pozyx_odom', Odometry, queue_size=1)
+        self.odom_id = 0
 
         self.pozyx = PozyxSerial(get_first_pozyx_serial_port())
         self.pozyx.printDeviceInfo()
@@ -56,6 +59,13 @@ class pozyx_node(object):
                 tag_pose.pose.orientation.y = rot[1]
                 tag_pose.pose.orientation.z = rot[2]
                 tag_pose.pose.orientation.w = rot[3]
+
+                self.odom_id = self.odom_id + 1
+                new_odom = Odometry()
+                new_odom.header = tag_pose.header
+                new_odom.header.id = self.odom_id
+                new_odom.pose = tag_pose.position
+                self.pub_odom.pub_odom(new_odom)
                 self.pub_poses.publish(tag_pose)
 
             else:
