@@ -19,18 +19,24 @@ def msg_cb(msg):
         odom_msg.pose.pose.orientation.z = q[2]
         odom_msg.pose.pose.orientation.w = q[3]
 
-        if pose.bot_id == 436 and bot_name=="super_pi01": 
+        if pose.bot_id == 439 and bot_name=="super_pi01": 
             pub_bot_location.publish(odom_msg)
-        elif pose.bot_id == 439 and bot_name=="super_pi02": 
+        elif pose.bot_id == 436 and bot_name=="super_pi02": 
             pub_bot_location.publish(odom_msg)
         elif pose.bot_id == 404 and bot_name=="super_pi03": 
             pub_bot_location.publish(odom_msg)
         elif pose.bot_id == 405 and bot_name=="super_pi04": 
             pub_bot_location.publish(odom_msg)
-        # if pose.bot_id == 427: loc_mmbot14_pub.publish(odom_msg)
-        # elif pose.bot_id == 426: loc_mmbot16_pub.publish(odom_msg)
-        # elif pose.bot_id == 432: loc_obstacle1_pub.publish(odom_msg)
-        # elif pose.bot_id == 433: loc_obstacle2_pub.publish(odom_msg)
+        elif pose.bot_id == 434 and bot_name=="super_pi05": 
+            pub_bot_location.publish(odom_msg)
+        elif pose.bot_id == 408 and bot_name=="super_pi06": 
+            pub_bot_location.publish(odom_msg)
+        elif pose.bot_id == 400 and bot_name=="super_pi07": 
+            pub_bot_location.publish(odom_msg)
+        elif pose.bot_id == 406 and bot_name=="super_pi08": 
+            pub_bot_location.publish(odom_msg)
+        elif pose.bot_id == 407 and bot_name=="super_pi09": 
+            pub_bot_location.publish(odom_msg)
 
 if __name__ == '__main__':
     rospy.init_node('Odom_Msg_Rename_Node')
