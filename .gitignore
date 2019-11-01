@@ -21,3 +21,6 @@ models/
 *.pkl
 *.h5
 *.caffemodel
+
+#datas
+dataset/
