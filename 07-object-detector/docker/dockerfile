@@ -1,0 +1,51 @@
+FROM pytorch/pytorch:1.0.1-cuda10.0-cudnn7-devel
+ARG PYTHON_VERSION=3.7
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+         build-essential \
+         cmake \
+         git \
+         curl \
+         ca-certificates \
+         libjpeg-dev \
+         libpng-dev \
+	 wget &&\
+     rm -rf /var/lib/apt/lists/*
+
+# Jupyter installation
+RUN conda install torchvision -c pytorch
+RUN apt-get update && apt-get install -y python-pip curl
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash
+RUN apt-get -y install nodejs python-opencv libgtk2.0-dev
+
+RUN pip install jupyter ipywidgets jupyterlab bqplot pyyaml jupyros numpy matplotlib opencv-python
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+
+
+EXPOSE 8888
+ENV QT_X11_NO_MITSHM=1
+ENV HOME=/home/${USER}
+# Configure user
+ARG user=student
+ARG passwd=student
+ARG uid=1000
+ARG gid=1000
+ENV USER=$user
+ENV PASSWD=$passwd
+ENV UID=$uid
+ENV GID=$gid
+RUN groupadd $USER && \
+    useradd --create-home --no-log-init -g $USER $USER && \
+    usermod -aG sudo $USER && \
+    echo "$PASSWD:$PASSWD" | chpasswd && \
+    chsh -s /bin/bash $USER && \
+    # Replace 1000 with your user/group id
+    usermod  --uid $UID $USER && \
+    groupmod --gid $GID $USER
+
+USER ${USER}
+ENV HOME=/home/${USER}
+WORKDIR ${HOME}
+#CMD ["jupyter", "notebook", "--no-browser", "--ip=0.0.0.0", "--NotebookApp.token=''"]
+CMD ["bash"]
