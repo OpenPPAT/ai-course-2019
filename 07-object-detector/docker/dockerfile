@@ -9,14 +9,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          ca-certificates \
          libjpeg-dev \
          libpng-dev \
-	 python-opencv &&\
+	 wget &&\
      rm -rf /var/lib/apt/lists/*
 
 # Jupyter installation
 RUN conda install torchvision -c pytorch
 RUN apt-get update && apt-get install -y python-pip curl
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash
-RUN apt-get -y install nodejs
+RUN apt-get -y install nodejs python-opencv libgtk2.0-dev
 
 RUN pip install jupyter ipywidgets jupyterlab bqplot pyyaml jupyros numpy matplotlib opencv-python
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
