@@ -4,3 +4,4 @@ docker run -it --rm --net=host \
             -w /root/ai-course-2019/05-jupyter-Fashion-Mnist-dataset-pytorch \
             argnctu/ai-course:pytorch-jupyter
 
+
