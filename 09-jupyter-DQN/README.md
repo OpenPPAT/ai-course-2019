@@ -32,4 +32,4 @@ ex:
 ```
 
 run entire DQN.ipynb \
-checkout your bird is hitting the bar in VNC now
+checkout your bird is hitting the bar in VNC
