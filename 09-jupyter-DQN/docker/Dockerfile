@@ -9,6 +9,10 @@ RUN apt-get update && \
     gedit \
     python3-pip \
     libsm6 \
+    sudo \
+    build-essential \
+    vim \
+    git \
     libxext6 \
     libxrender-dev\
     && rm -rf /var/lib/apt/lists/*
@@ -21,3 +25,6 @@ RUN pip3 install \
     Pillow \
     opencv-python \
     numpy==1.16
+
+# RUN useradd -m flappy && echo "flappy:aicourse" | chpasswd && adduser flappy sudo
+# USER flappy

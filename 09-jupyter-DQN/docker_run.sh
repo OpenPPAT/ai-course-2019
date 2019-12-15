@@ -24,6 +24,7 @@ NC='\033[0m'
 
 host_vnc_port=6080
 host_jupyter_port=8888
+host_tensorboard_port=6006
 
 ret_code=$(netstat -tuln | grep :$host_vnc_port)
 cnt=1;
@@ -49,17 +50,32 @@ do
     sleep 0.1
 done
 
+ret_code=$(netstat -tuln | grep :$host_tensorboard_port)
+cnt=1;
+while [[ ! -z $ret_code && cnt -le 10 ]]
+do 
+    echo -e "${RED}TENSORBOARD_PORT:$host_tensorboard_port is already in use, trying another port.${NC}"
+    host_jupyter_port=$((host_jupyter_port + 1))
+    cnt=$((cnt + 1))
+    # ret_code="$(lsof -Pi :$port -sTCP:LISTEN -t)"
+    ret_code=$(netstat -tuln | grep :$host_tensorboard_port)
+    sleep 0.1
+done
+
 echo -e "Use the port: ${GREEN}${host_vnc_port} as VNC_PORT.${NC}"
 echo -e "Use the port: ${GREEN}${host_jupyter_port} as JUPYTER_PORT.${NC}"
+echo -e "Use the port: ${GREEN}${host_tensorboard_port} as TENSORBOARD_PORT.${NC}"
 
 docker run -it --rm --name="ai-course-vnc${host_vnc_port}" \
             -e RESOLUTION=1600x900 \
             -p ${host_vnc_port}:80 \
             -p ${host_jupyter_port}:8888 \
+            -p ${host_tensorboard_port}:6006 \
             --runtime nvidia \
-            -v "/home/$USER/ai-course-2019:/root/ai-course-2019" \
+            -v "/home/$USER/ai-course-2019:/home/root/ai-course-2019" \
             -v "/dev:/dev" \
             --privileged \
             --runtime nvidia \
             --rm \
+            --hostname aicourse \
             argnctu/ai-course:jupyter-09 
