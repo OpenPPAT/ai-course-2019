@@ -1,15 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-	<arg name="pkg_name" value="joy_mapper"/>
-	<arg name="node_name" default="joy_mapper_node"/>
-		
-	<arg name="veh" doc="Name of vehicle. ex: megaman"/>
-	<arg name="local" default="false" doc="true for running on laptop. false for running on vehicle."/>
+	<arg name="veh" doc="Name of vehicle. ex: super_pi01"/>
         <arg name="model"/>
 
-	<!-- Run on remote (vehicle) -->
-	<node unless="$(arg local)" ns="$(arg veh)" pkg="imitation_following" type="pytorch_joy_mapper_node.py" name="pytorch_joy_mapper" output="screen" clear_params="true" required="true">
-            <param name="model_name" type="str" value="$(arg model)"/>
+	<node ns="$(arg veh)" pkg="imitation_following" type="pytorch_joy_mapper_node.py" name="pytorch_joy_mapper" output="screen" clear_params="true" required="true">
+	    <param name="model_path" type="str" value="$(find imitation_following)/models/$(arg model)"/>
 
 	    <remap from="/$(arg veh)/pytorch_joy_mapper/car_cmd" to="/$(arg veh)/joy_mapper_node/car_cmd" /> 
 	</node>	

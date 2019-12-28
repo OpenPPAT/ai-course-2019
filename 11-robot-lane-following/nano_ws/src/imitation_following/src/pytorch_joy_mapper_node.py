@@ -73,6 +73,7 @@ class JoyMapper(object):
         self.ncs_control = 0
         self.omega = 0
         self.count = 0
+        self.model_path = rospy.get_param("model_path")
 
         # Setup Parameters
         self.v_gain = self.setupParam("~speed_gain", 0.41)
@@ -121,16 +122,15 @@ class JoyMapper(object):
     # Load model
     def initial(self):
         self.model = AlexNet()
-        state_dict = torch.load('/ai-course-2019/11-robot-lane-following/nano_ws/src/imitation_following/models/AlexNet_15class_epoch156_loss0.87731_3.pth')
+        state_dict = torch.load(self.model_path)
         self.model.load_state_dict(state_dict)
 
        
 
     def img_cb(self, data):
-        print( "Image callback")
         self.dim = (101, 101)  # (width, height)
         self.count += 1
-        if self.count == 4:
+        if self.count == 6:
             self.count = 0
             try:
                 # convert image_msg to cv format
