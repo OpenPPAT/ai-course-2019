@@ -99,9 +99,9 @@ class JoyMapper(object):
         # Subscriptions
         #self.image_sub = rospy.Subscriber(
         #    "~image/compressed", CompressedImage, self.img_cb, queue_size=1)
-        print("1")
+        self.veh_name = rospy.get_param("veh")
         self.image_sub = rospy.Subscriber(
-            "/super_pi06/camera_node/image/compressed", CompressedImage, self.img_cb, queue_size=1)
+            "/"+self.veh_name+"/camera_node/image/compressed", CompressedImage, self.img_cb, queue_size=1)
         self.sub_joy_ = rospy.Subscriber("joy", Joy, self.cbJoy, queue_size=1)
 
         # timer
