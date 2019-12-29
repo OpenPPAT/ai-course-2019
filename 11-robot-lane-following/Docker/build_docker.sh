@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t pytorch-ros:arm64v8 .
+docker build -t argnctu/ai-course:arm64v8-pytorch-ros .

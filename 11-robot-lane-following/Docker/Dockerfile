@@ -70,6 +70,9 @@ RUN wget https://github.com/IntelRealSense/librealsense/archive/v${LIBREALSENSE_
 #WORKDIR /tmp/installLibrealsense
 #RUN ./installLibrealsense.sh
 
+RUN echo "export ROS_MASTER_URI=http://10.42.0.1:11311" >> /root/.bashrc && \
+    echo "export ROS_IP=10.42.0.2" >> /root/.bashrc && \
+    echo "source /ai-course-2019/11-robot-lane-following/nano_ws/devel/setup.bash" >> /root/.bashrc
 
 ENTRYPOINT ["/ros_entrypoint.sh"]
 WORKDIR /
