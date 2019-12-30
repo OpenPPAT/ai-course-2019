@@ -67,7 +67,7 @@ class JoyMapper(object):
         self.last_pub_time = rospy.Time.now()
 
         # initial Pytorch
-        self.model_path = rospy.get_param("model_path")
+        self.model_path = rospy.get_param("~model_path")
         self.initial()
         self.bridge = CvBridge()
         self.joy_control = 1
