@@ -67,13 +67,14 @@ class JoyMapper(object):
         self.last_pub_time = rospy.Time.now()
 
         # initial Pytorch
+        self.model_path = rospy.get_param("model_path")
         self.initial()
         self.bridge = CvBridge()
         self.joy_control = 1
         self.ncs_control = 0
         self.omega = 0
         self.count = 0
-        self.model_path = rospy.get_param("model_path")
+
 
         # Setup Parameters
         self.v_gain = self.setupParam("~speed_gain", 0.41)
