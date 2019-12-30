@@ -5,7 +5,7 @@
 
 	<node ns="$(arg veh)" pkg="imitation_following" type="pytorch_joy_mapper_node.py" name="pytorch_joy_mapper" output="screen" clear_params="true" required="true">
 	    <param name="model_path" type="str" value="$(find imitation_following)/models/$(arg model)"/>
-	    <param name="veh_name" type="str" value="$(arg veh_name)"/>
+	    <param name="veh_name" type="str" value="$(arg veh)"/>
 
 	    <remap from="/$(arg veh)/pytorch_joy_mapper/car_cmd" to="/$(arg veh)/joy_mapper_node/car_cmd" /> 
 	</node>	
